@@ -7,19 +7,24 @@ OUTPUT_FILE = "relatorio.csv"
 
 # Regex para pegar timestamp, IP origem, porta origem, IP destino e porta destino
 LINE_RE = re.compile(
-    r'^\s*([0-9]+\.[0-9]+)\s+'       # timestamp
+    r'^\s*([0-9:.]+)\s+IP\s+'                     # timestamp (ex: 00:00:00.000000)
     r'([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\.([0-9]+)\s+>\s+'  # srcIP.srcPort
     r'([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\.([0-9]+)'         # dstIP.dstPort
 )
+
 
 def parse_line(line):
     m = LINE_RE.search(line)
     if not m:
         return None
-    ts = float(m.group(1))
+    ts_str = m.group(1)  # ex: 00:00:14.335726
+    # converte hh:mm:ss.xxx para segundos float
+    h, mnt, s = ts_str.split(":")
+    ts = float(h) * 3600 + float(mnt) * 60 + float(s)
     src_ip = m.group(2)
     dst_port = int(m.group(5))
     return ts, src_ip, dst_port
+
 
 def main():
     eventos = defaultdict(list)   # {IP: [(tempo, porta), ...]}
