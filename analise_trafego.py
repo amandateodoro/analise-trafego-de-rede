@@ -5,11 +5,10 @@ from collections import defaultdict
 INPUT_FILE = "trafego.txt"
 OUTPUT_FILE = "relatorio.csv"
 
-# Regex para pegar timestamp, IP origem, porta origem, IP destino e porta destino
 LINE_RE = re.compile(
-    r'^\s*([0-9:.]+)\s+IP\s+'                     # timestamp (ex: 00:00:00.000000)
-    r'([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\.([0-9]+)\s+>\s+'  # srcIP.srcPort
-    r'([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\.([0-9]+)'         # dstIP.dstPort
+    r'^\s*([0-9:.]+)\s+IP\s+'                     
+    r'([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\.([0-9]+)\s+>\s+'  
+    r'([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\.([0-9]+)'         
 )
 
 
@@ -17,8 +16,7 @@ def parse_line(line):
     m = LINE_RE.search(line)
     if not m:
         return None
-    ts_str = m.group(1)  # ex: 00:00:14.335726
-    # converte hh:mm:ss.xxx para segundos float
+    ts_str = m.group(1)  
     h, mnt, s = ts_str.split(":")
     ts = float(h) * 3600 + float(mnt) * 60 + float(s)
     src_ip = m.group(2)
@@ -27,7 +25,7 @@ def parse_line(line):
 
 
 def main():
-    eventos = defaultdict(list)   # {IP: [(tempo, porta), ...]}
+    eventos = defaultdict(list)  
     total = defaultdict(int)
 
     with open(INPUT_FILE) as f:
